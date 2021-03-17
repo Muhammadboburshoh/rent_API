@@ -6,21 +6,21 @@ const util = require("util")
 const writeFile = util.promisify(fs.writeFile)
 const readFile = util.promisify(fs.readFile)
 
-const {  states } = require("./holders")
+const { states } = require("./states")
 
 const app = express()
 
 app.use(express.json())
 
-app.get("/", (req, res) => res.send("Home page"))
+app.get("/", (req, res) => res.send("Home pages"))
 
 app.get("/classifieds", async (req, res) => {
 
   const respons = await readFile("data.json", "utf8")
-  holders = JSON.parse(respons)
+  const ads = JSON.parse(respons)
 
   let newArr = []
-  holders.forEach(holder => {
+  ads.forEach(holder => {
 
     let newState = states.find(state => state.id == holder.state_id)
 
@@ -42,27 +42,40 @@ app.get("/classifieds", async (req, res) => {
 app.post("/classifieds", async (req, res) => {
 
   const respons = await readFile("data.json", "utf8")
-  holders = JSON.parse(respons)
+  const ads = JSON.parse(respons)
+
+
+  /* const holdersRespons = await readFile("holders.json", "utf8")
+  const holder = JSON.parse(holdersRespons) */
+
 
   const userState = states.find(state => state.id == req.body.state_id)
+
+  let adsId
+
+  if(ads.length ===0 ) {
+    adsId = 0
+  } else {
+    adsId = ads[ads.length -1].id + 1
+  }
 
   if(userState) {
 
     const newHolder = {
-      id: holders[holders.length -1].id + 1,
-      holder_id: holders[holders.length -1].id + 1,
+      id: adsId,
+      holder_id: adsId,
       state_id: req.body.state_id,
       monthlyPrice: req.body.monthlyPrice,
       maxStudents: req.body.maxStudents,
       roomCount: req.body.roomCount,
       address: req.body.address,
-      holder: req.body.holder,
-      holderPhone: req.body.holderPhone
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
     }
 
-    holders.push(newHolder)
+    ads.push(newHolder)
 
-    await writeFile("data.json", JSON.stringify(holders, null, 2))
+    await writeFile("data.json", JSON.stringify(ads, null, 2))
 
     res.send(newHolder)
   }
@@ -70,30 +83,29 @@ app.post("/classifieds", async (req, res) => {
     res.status(400).send("Mavjud emas!")
   }
 
-  res.send(holders)
 })
 
 app.get("/classified/:id", async (req, res) => {
 
   const respons = await readFile("data.json", "utf8")
-  holders = JSON.parse(respons)
+  ads = JSON.parse(respons)
 
-  const holder = holders.find(holder => holder.id == req.params.id)
+  const ad = ads.find(ad => ad.id == req.params.id)
 
-  if(holder) {
+  if(ad) {
 
-    const newHolder = {
-      id: holder.id,
-      holder_id: holder.holder_id,
-      state: states[ holder.state_id - 1].state,
-      monthlyPrice: holder.monthlyPrice,
-      maxStudents: holder.maxStudents,
-      roomCount: holder.maxStudents,
-      address: holder.address,
-      holder: holder.holder,
-      holderPhone: holder.holderPhone
+    const newad = {
+      id: ad.id,
+      ad_id: ad.ad_id,
+      state: states[ ad.state_id - 1].state,
+      monthlyPrice: ad.monthlyPrice,
+      maxStudents: ad.maxStudents,
+      roomCount: ad.maxStudents,
+      address: ad.address,
+      firstName: ad.firstName,
+      lastName: ad.lastName
     }
-    res.send(newHolder)
+    res.send(newad)
   } else {
     res.status(400).send("Mavjud emas!")
   }
@@ -102,33 +114,31 @@ app.get("/classified/:id", async (req, res) => {
 app.delete("/classified/:id", async (req, res) => {
 
   const respons = await readFile("data.json", "utf8")
-  holders = JSON.parse(respons)
+  ads = JSON.parse(respons)
 
-  const holder = holders.findIndex(holder => holder.id == req.params.id)
+  const ad = ads.findIndex(ad => ad.id == req.params.id)
 
-  if(holder !== undefined && holder >=0 ) {
-    const deleteHolder = holders[holder]
+  if(ad !== undefined && ad >=0 ) {
+    let deleteAd = ads[ad]
 
-    const newHolder = {
-      id: deleteHolder.id,
-      state: states[ deleteHolder.state_id -1 ].state,
-      monthlyPrice: deleteHolder.monthlyPrice,
-      maxStudents: deleteHolder.maxStudents,
-      roomCount: deleteHolder.maxStudents,
-      address: deleteHolder.maxStudents,
-      holder: deleteHolder.holder,
-      holderPhone: deleteHolder.holderPhone
+    const newads = {
+      id: deleteAd.id,
+      state: states[ deleteAd.state_id -1 ].state,
+      monthlyPrice: deleteAd.monthlyPrice,
+      maxStudents: deleteAd.maxStudents,
+      roomCount: deleteAd.maxStudents,
+      address: deleteAd.maxStudents,
     }
 
-    holders.splice(holder, 1)
+    ads.splice(ad, 1)
 
-    await writeFile("data.json", JSON.stringify(holders, null, 2))
+    await writeFile("data.json", JSON.stringify(ads, null, 2))
 
-    res.send(newHolder)
+    res.send(newads)
   } else {
     res.status(400).send("Mavjud emas!")
   }
 })
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 4005
 app.listen(PORT, () => console.log(`localhost:${PORT}`))
