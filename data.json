@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "holder_id": 1,
+    "state_id": 2,
+    "monthlyPrice": "150",
+    "maxStudents": "4",
+    "roomCount": "1",
+    "address": "dagbet",
+    "holder": "Muhammadbobur",
+    "holderPhone": "+998997139887"
+  },
+  {
+    "id": 2,
+    "holder_id": 2,
+    "state_id": 1,
+    "monthlyPrice": "150",
+    "maxStudents": "4",
+    "roomCount": "1",
+    "address": "chorsu",
+    "holder": "Abdulloh",
+    "holderPhone": "+998997139887"
+  },
+  {
+    "id": 3,
+    "holder_id": 3,
+    "state_id": 3,
+    "monthlyPrice": "20",
+    "maxStudents": "5",
+    "roomCount": "2",
+    "address": "G'ijdivon",
+    "holder": "Abdukarim",
+    "holderPhone": "+998997139887"
+  },
+  {
+    "id": 4,
+    "holder_id": 4,
+    "state_id": "5",
+    "monthlyPrice": "100",
+    "maxStudents": "2",
+    "roomCount": "1",
+    "address": "markazi",
+    "holder": "Abdurahmon",
+    "holderPhone": "+998933339887"
+  }
+]
